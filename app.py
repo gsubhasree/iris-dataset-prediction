@@ -12,16 +12,13 @@ app = Flask(__name__)
  
 @app.route('/')
 def home():  
-    rows = None
     if str(path.exists("data.pkl")) == "False":
         df = pd.read_csv('iris.csv')
         df.to_pickle("data.pkl")
-        rows=len(df)
-        col=len(df.columns)
     else:
         df = pd.read_pickle("data.pkl")
-        rows=len(df)
-        col=len(df.columns)
+    rows=len(df)
+    col=len(df.columns)
     return render_template('index.html',info="Dataset has {r} rows, {c} columns".format(r=rows,c=col))
  
 @app.route('/add',methods=['POST'])
@@ -32,19 +29,22 @@ def add():
     
 @app.route('/append',methods=['POST'])
 def append():
+    rows=None
+    col=None
     if request.method == 'POST':
-        sample_data = {}
-        sample_data['petal_length'] = request.form.getlist('petal_length[]')[0]
-        sample_data['sepal_length'] = request.form.getlist('sepal_length[]')[0]
-        sample_data['petal_width'] = request.form.getlist('petal_width[]')[0]
-        sample_data['sepal_width'] = request.form.getlist('sepal_width[]')[0]
-        sample_data['species'] = request.form.getlist('species[]')[0]
-        df = pd.read_pickle("data.pkl")
-        df = df.append(sample_data,ignore_index=True)
-        df.to_pickle("data.pkl")
-        print(df.head)
-        rows=len(df)
-        return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows),response="Data Successfully added to table")
+        for x in range(len(request.form.getlist('petal_length[]'))):
+            sample_data = {}
+            sample_data['petal_length'] = request.form.getlist('petal_length[]')[x]
+            sample_data['sepal_length'] = request.form.getlist('sepal_length[]')[x]
+            sample_data['petal_width'] = request.form.getlist('petal_width[]')[x]
+            sample_data['sepal_width'] = request.form.getlist('sepal_width[]')[x]
+            sample_data['species'] = request.form.getlist('species[]')[x]
+            df = pd.read_pickle("data.pkl")
+            df = df.append(sample_data,ignore_index=True)
+            df.to_pickle("data.pkl")
+            rows=len(df)
+            col=len(df.columns)
+    return render_template('index.html',info="Dataset has {r} rows, {c} columns".format(r=rows,c=col),response="Data Successfully added to table")
     
 @app.route('/train',methods=['POST'])
 def train():
