@@ -1,6 +1,6 @@
 # ML model deployment with Iris Dataset
 
-https://iris-flower-class-predictor.herokuapp.com/
+https://prediction-on-iris-dataset.herokuapp.com/
 
 ## Requirements:
 	Python IDE (Anaconda recommended)
@@ -25,7 +25,7 @@ https://iris-flower-class-predictor.herokuapp.com/
 			The species is predicted by the trained model of user's choice with the input parameters:sepal length,sepal width, petal length and petal width.
 
 ## Approach:
-	Exploratory Data Analysis is done on the given dataset
+	Exploratory Data Analysis is done on the given dataset (In main.ipynb file)
 	It is found that the dataset does not have null/NaN values
 	Dataset is then splitted into train and test sets,classification models: decision tree, Support Vector Machine and K Nearest Neighbours are applied and corresponding accuracies of the models are calculated
 	Decision Tree and KNN are found to perform better and hence are chosen for deployment
