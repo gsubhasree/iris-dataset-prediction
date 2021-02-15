@@ -1,9 +1,7 @@
 import numpy as np
-from flask import Flask, request, jsonify, render_template
-import pandas as pd
+from flask import Flask, request, render_template
 import matplotlib.pyplot as plt
-import seaborn as sns
-import os.path
+import pandas as pd
 from os import path
  
 import pickle
@@ -20,6 +18,12 @@ def home():
     rows=len(df)
     col=len(df.columns)
     return render_template('index.html',info="Dataset has {r} rows, {c} columns".format(r=rows,c=col))
+
+@app.route('/view',methods=['POST'])
+def view():
+    if request.method == 'POST':
+        df = pd.read_pickle("data.pkl")
+        return render_template('view.html',df_view=df.to_html())
  
 @app.route('/add',methods=['POST'])
 def add():
@@ -60,6 +64,10 @@ def train():
         pickle.dump(classifier, open('dtree.pkl','wb'))
         with open('dtree.pkl', 'rb') as f:
             data = pickle.load(f)
+        fig = plt.figure(figsize=(25,20))
+        tree.plot_tree(classifier, feature_names=["sepal_length","sepal_width","petal_length","petal_width"]  ,class_names=["setosa","versicolor","virginica"],filled=True)
+        fig.savefig("static/images/treeimg.jpg")
+        return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows),response="Training successful and stored in localstorage",data=data,model_choice=model_choice)
     elif model_choice == 'knnmodel':
         from sklearn import neighbors
         classifier=neighbors.KNeighborsClassifier()
@@ -67,7 +75,7 @@ def train():
         pickle.dump(classifier, open('knn.pkl','wb'))
         with open('knn.pkl', 'rb') as f:
             data = pickle.load(f)
-    return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows),response="Training successful and stored in localstorage",data=data,model_choice=model_choice)
+        return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows),response="Training successful and stored in localstorage",data=data,model_choice=model_choice)
  
 @app.route('/predict',methods=['POST'])
 def predict():
@@ -87,7 +95,7 @@ def predict():
             
     prediction = model.predict(final_features)
  
-    return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows), features='Given [ Sepal_length, Sepal_width, Petal_length, Petal_width ]:{}'.format(features),prediction_text='Predicted Species:{}'.format(prediction),response="Prediction Successful")
+    return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows), features='Given [ Sepal_length, Sepal_width, Petal_length, Petal_width ]:{}'.format(features),prediction_text='Predicted Species:{}'.format(prediction),response="Prediction Successful",model_choice=model_choice)
        
 if __name__ == "__main__":
     app.run(debug=True)

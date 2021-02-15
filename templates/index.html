@@ -33,7 +33,10 @@
         color:blue;
         text-align:center;
     }
-    
+    img {
+		width: 100%;
+		height: auto;
+	}
     .form-control {
         height: 30px;
         padding: 6px 12px;
@@ -82,16 +85,12 @@
         text-align: center;
         white-space: nowrap;
         vertical-align: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
         user-select: none;
         border: 1px solid transparent;
         padding: .375rem .75rem;
         font-size: 1rem;
         line-height: 1.5;
         border-radius: .25rem;
-        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
     .outbox,.outbox1{
         position:relative;
@@ -122,7 +121,10 @@
     {%if response:%}
     <div class='outbox1'>
     <p>
-        <b>{{response}}</b>
+        <b>{{response}}</b><br>
+		{%if model_choice=='decisiontree'%}
+         <a href="/static/images/treeimg.jpg" >Display Decision Tree</a>
+		{%endif%}
     </p>
     </div>
     {%endif%}
@@ -130,6 +132,7 @@
         <button id='menu' onclick="norow()" style="background-color:red;">Add Data   +</button>
         <button id='menu' onclick="train()" style="background-color:orange;">Train the current data</button>
         <button id='menu' onclick="prediction()" style="background-color:green;">Test the current model built</button>
+		<form action="{{ url_for('view')}}" method="post"><button id='menu' style="background-color:blue;">View Dataset</button></form>
     </div>
     <div class='box' id='row'> 
         <form action="{{ url_for('add')}}" method="post">
@@ -169,7 +172,6 @@
       </form>
  
  </div>
- <br>
     <p>
     <b>Informations about dataset:</b>
     {{info}}
@@ -183,7 +185,6 @@
     {%endif%}
     
     {%if prediction_text:%}
-    <br>
     <p>
         <b>Prediction:</b>
         {{ prediction_text }}
@@ -208,10 +209,10 @@
             document.querySelector("#predict").style.display="block";
         }
         {%if model_choice=='decisiontree'%}
-            localStorage.setItem("dtree",`${{data}}`)
+            localStorage.setItem("dtree",`{{data}}`)
         {%endif%}
         {%if model_choice=='knnmodel'%}
-            localStorage.setItem("knn",`${{data}}`)
+            localStorage.setItem("knn",`{{data}}`)
         {%endif%}
     </script>
 </body>
