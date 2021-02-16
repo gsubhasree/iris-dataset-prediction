@@ -146,8 +146,11 @@
             <div class="input-field">
                 <select class="form-control" name="model_choice">
                     <option value="" disabled selected>Select Model</option>
+					<option value="LogisticRegression">Logistic Regression</option>
                     <option value="decisiontree">Decision Tree</option>
-                    <option value="knnmodel">K-Nearest Neighbour</option>
+                    <option value="KNN">K-Nearest Neighbour</option>
+					<option value="SVM">SVM</option>
+					<option value="RandomForest">Random Forest</option>
                 </select>
                 <button type="submit" class="btn btn-primary btn-block btn-large">Train</button>
             </div>  
@@ -163,8 +166,11 @@
             </p>        
             <select class="form-control" name="model_choice">
                 <option value="" disabled selected>Select Model</option>
+				<option value="LogisticRegression">Logistic Regression</option>
                 <option value="decisiontree">Decision Tree</option>
-                <option value="knnmodel">K-Nearest Neighbour</option>
+                <option value="KNN">K-Nearest Neighbour</option>
+				<option value="SVM">SVM</option>
+				<option value="RandomForest">Random Forest</option>
             </select>
         </div>
  
@@ -186,7 +192,7 @@
     
     {%if prediction_text:%}
     <p>
-        <b>Prediction:</b>
+        <b>Predicted Species:</b>
         {{ prediction_text }}
     </p>
     </div>

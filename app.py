@@ -67,16 +67,39 @@ def train():
         fig = plt.figure(figsize=(25,20))
         tree.plot_tree(classifier, feature_names=["sepal_length","sepal_width","petal_length","petal_width"]  ,class_names=["setosa","versicolor","virginica"],filled=True)
         fig.savefig("static/images/treeimg.jpg")
-        return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows),response="Training successful and stored in localstorage",data=data,model_choice=model_choice)
-    elif model_choice == 'knnmodel':
+        return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows),response="Decisiontree model trained and stored in localstorage",data=data,model_choice=model_choice)
+    elif model_choice == 'KNN':
         from sklearn import neighbors
         classifier=neighbors.KNeighborsClassifier()
         classifier.fit(x,y)
         pickle.dump(classifier, open('knn.pkl','wb'))
         with open('knn.pkl', 'rb') as f:
             data = pickle.load(f)
-        return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows),response="Training successful and stored in localstorage",data=data,model_choice=model_choice)
- 
+        return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows),response="K-NN model trained and stored in localstorage",data=data,model_choice=model_choice)
+    elif model_choice == 'SVM':
+        from sklearn import svm
+        classifier= svm.SVC(gamma='scale')
+        classifier.fit(x,y)
+        pickle.dump(classifier, open('svm.pkl','wb'))
+        with open('svm.pkl', 'rb') as f:
+            data = pickle.load(f)
+        return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows),response="SVM model trained and stored in localstorage",data=data,model_choice=model_choice)
+    elif model_choice == 'LogisticRegression':
+        from sklearn.linear_model import LogisticRegression
+        classifier = LogisticRegression(multi_class='auto',solver='lbfgs')
+        classifier.fit(x, y)
+        pickle.dump(classifier, open('lr.pkl','wb'))
+        with open('lr.pkl', 'rb') as f:
+            data = pickle.load(f)
+        return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows),response="Logistic Regression model trained and stored in localstorage",data=data,model_choice=model_choice)
+    elif model_choice == 'RandomForest':
+        from sklearn.ensemble import RandomForestClassifier
+        classifier = RandomForestClassifier()
+        classifier.fit(x,y)
+        pickle.dump(classifier, open('rf.pkl','wb'))
+        with open('rf.pkl', 'rb') as f:
+            data = pickle.load(f)
+        return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows),response="Random Forest model trained and stored in localstorage",data=data,model_choice=model_choice)
 @app.route('/predict',methods=['POST'])
 def predict():
     df = pd.read_pickle("data.pkl")
@@ -88,14 +111,26 @@ def predict():
         if str(path.exists("dtree.pkl")) == "False":
             return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows),prediction_text='Please train decision tree model before testing')
         model = pickle.load(open('dtree.pkl', 'rb'))
-    elif model_choice == 'knnmodel':
+    elif model_choice == 'KNN':
         if str(path.exists("knn.pkl")) == "False":
             return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows),prediction_text='Please train knn model before testing')
         model = pickle.load(open('knn.pkl', 'rb'))
-            
+    elif model_choice == 'SVM':
+        if str(path.exists("svm.pkl")) == "False":
+            return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows),prediction_text='Please train SVM model before testing')
+        model = pickle.load(open('svm.pkl', 'rb'))
+    elif model_choice == 'LogisticRegression':
+        if str(path.exists("lr.pkl")) == "False":
+            return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows),prediction_text='Please train Logistic Regression model before testing')
+        model = pickle.load(open('lr.pkl', 'rb'))  
+        final_features = [np.array(features).astype(float)]
+    elif model_choice == 'RandomForest':
+        if str(path.exists("rf.pkl")) == "False":
+            return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows),prediction_text='Please train Random Forest model before testing')
+        model = pickle.load(open('rf.pkl', 'rb'))    
     prediction = model.predict(final_features)
  
-    return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows), features='Given [ Sepal_length, Sepal_width, Petal_length, Petal_width ]:{}'.format(features),prediction_text='Predicted Species:{}'.format(prediction),response="Prediction Successful",model_choice=model_choice)
+    return render_template('index.html',info="Dataset has {} rows, 5 columns".format(rows), features='Given [ Sepal_length, Sepal_width, Petal_length, Petal_width ]:{}'.format(features),prediction_text='{}'.format(prediction),response="Prediction ({}) Successful".format(model_choice),model_choice=model_choice)
        
 if __name__ == "__main__":
     app.run(debug=True)
