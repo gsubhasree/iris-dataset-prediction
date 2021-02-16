@@ -3,10 +3,10 @@
 https://prediction-on-iris-dataset.herokuapp.com/
 
 ## Requirements:
-	Python IDE (Anaconda recommended)
+	Python(version 3.7) IDE (Anaconda recommended)
 	FLASK 
 	Gunicorn
-	Libraries: numpy, pandas, seaborn, scikit-learn, pickle
+	Libraries: numpy, pandas, seaborn, scikit-learn, matplotlib, pickle
 
 ## Installation & Setup:
 	After installing packages in requirements and setting up virtual env,
@@ -15,21 +15,21 @@ https://prediction-on-iris-dataset.herokuapp.com/
 	After executing the command above, visit http://localhost:5000/ in your browser to see your app
 
 ## Problem Statement:
-	To train and deploy 2 ML classification algorithms:-Decision Tree and K Nearest Neighbours, on the Iris Dataset
+	To train and deploy ML classification algorithms on IRIS Dataset. 
+	Algorithms used here are Logistic Regression,Decision Tree, K Nearest Neighbours, Support Vector Machine & Random Forest Classifier.
 
 	The deployed website has the following provisions:
 		Add new data over the given dataset: 
 			User can input data consisting of sepal length,sepal width, petal length,petal width, and species(setosa, versicolor, virginica). 
-		Train the current dataset on model of user's choice(from the 2) and retain the model
+		Train the current dataset on model of user's choice(from the 5) and retain the model
 		Test the current model: 
 			The species is predicted by the trained model of user's choice with the input parameters:sepal length,sepal width, petal length and petal width.
+		View the dataset
 
 ## Approach:
 	Exploratory Data Analysis is done on the given dataset (In main.ipynb file)
 	It is found that the dataset does not have null/NaN values
-	Dataset is then splitted into train and test sets,classification models: decision tree, Support Vector Machine and K Nearest Neighbours are applied and corresponding accuracies of the models are calculated
-	Decision Tree and KNN are found to perform better and hence are chosen for deployment
-	The current dataset and the models built are retained by generation of .pkl files
+	The current dataset and the models built are retained by generation of .pkl files and stored in localstorage.
 	The built web app is then deployed to Heroku
 
 ## Acknowledgements:
